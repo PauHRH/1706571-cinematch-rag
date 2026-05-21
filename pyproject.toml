@@ -1,0 +1,23 @@
+[project]
+name = "cinematch-rag"
+version = "0.1.0"
+description = "PLAB1 — Mini-Agentic-RAG over sample_mflix.embedded_movies"
+requires-python = ">=3.11"
+dependencies = [
+    "pymongo>=4.10",
+    "openai>=1.54",
+    "python-dotenv>=1.0",
+]
+
+# N4 only (multi-agent orchestration with LangGraph + MongoDB memory).
+# Pattern documented in enunciat §0.5.
+[project.optional-dependencies]
+n4 = [
+  "langgraph>=0.2",
+  "langchain-openai>=0.2",
+  "langchain>=0.3",
+  "langgraph-checkpoint-mongodb>=0.1",
+]
+
+[tool.uv]
+package = false
