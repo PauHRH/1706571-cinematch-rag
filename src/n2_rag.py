@@ -37,8 +37,16 @@ def semantic_search(query: str, limit: int = 5) -> list[dict]:
     return list(collection.aggregate(pipeline))
 
 
+
+
 if __name__ == "__main__":
     q = sys.argv[1] if len(sys.argv) > 1 else "space movies where humanity is in danger"
     print(f"Query: {q!r}\n")
+    conf = 0
     for r in semantic_search(q):
-        print(f"  {r['score']:.4f}  ({r.get('year', '?')})  {r['title']}")
+        if r['score'] < 0.90:
+            conf += 1
+        else:
+            print(f"  {r['score']:.4f}  ({r.get('year', '?')})  {r['title']}")
+    if conf == 5:
+        print("Error: no s'ha trobat cap pelicula amb una confiança en aquest context.")
