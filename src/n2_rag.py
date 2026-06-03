@@ -21,7 +21,7 @@ def semantic_search(query: str, limit: int = 5) -> list[dict]:
                 "queryVector": query_vector,
                 # numCandidates must be > limit: more candidates = better
                 # recall in the approximate (HNSW/aNN) search, at some latency cost.
-                "numCandidates": 5,
+                "numCandidates": 10*limit,
                 "limit": limit,
             }
         },
