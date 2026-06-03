@@ -49,9 +49,17 @@ def semantic_search(query: str, limit: int = 5) -> list[dict]:
 
 def rag_query(query: str) -> str:
 
-    # RETRIEVE
-    docs = semantic_search(query, limit=5)
+    raw_results = semantic_search(query)
+    docs = [r for r in raw_results if r['score'] >= 0.90]
     
+    if not docs:
+        print("Error: no s'ha trobat cap pelicula amb una confiança en aquest context.")
+    else:
+        print(f"{len(docs)} películas encontradas con alta confianza (>= 0.90)")
+        for r in docs:
+            print(f"  {r['score']:.4f}  ({r.get('year', '?')})  {r['title']}")
+            
+
     # CONSTRUCT
     sources = []
     context_entries = []
@@ -96,10 +104,7 @@ def rag_query(query: str) -> str:
         temperature=0 
     )
 
-    return {
-        "answer": response.choices[0].message.content,
-        "sources": sources
-    }
+    return response.choices[0].message.content
 
 
 if __name__ == "__main__":
@@ -107,18 +112,6 @@ if __name__ == "__main__":
     q = sys.argv[1] if len(sys.argv) > 1 else "space movies where humanity is in danger"
     print(f"Query: {q!r}\n")
     
-
-    raw_results = semantic_search(q)
-    good_results = [r for r in raw_results if r['score'] >= 0.90]
-    
-    if not good_results:
-        print("Error: no s'ha trobat cap pelicula amb una confiança en aquest context.")
-    else:
-        print(f"{len(good_results)} películas encontradas con alta confianza (>= 0.90)")
-        for r in good_results:
-            print(f"  {r['score']:.4f}  ({r.get('year', '?')})  {r['title']}")
-            
-
     response = rag_query(q)
     print("\n--- Respuesta RAG ---")
-    print(response["answer"])
+    print(response)
