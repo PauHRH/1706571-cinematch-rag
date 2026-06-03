@@ -53,17 +53,20 @@ def rag_query(query: str) -> str:
     docs = semantic_search(query, limit=5)
     
     # CONSTRUCT
+    sources = []
     context_entries = []
     for doc in docs:
         plot_text = doc.get('plot', 'No plot available')
         year_text = doc.get('year', '?')
         context_entries.append(f"Title: {doc['title']} ({year_text})\nPlot: {plot_text}")
+        sources.append({"title": doc['title'], "score": doc['score']})
     
     context = "\n\n".join(context_entries)
 
     # PROMPT
     prompt = f"""You are a helpful assistant. Answer ONLY using the provided context.
     If the context doesn't contain the answer, say that you don't know. Do not invent movies.
+    Always cite the exact titles of the movies you use in your answer.
 
     Context:
     {context}
@@ -71,14 +74,19 @@ def rag_query(query: str) -> str:
     Question:
     {query}
     """
-
+    system_instruction = (
+        "You are a strict factual assistant. Answer ONLY using the explicitly provided context. "
+        "If the context does not contain the answer or is insufficient, you must say exactly: "
+        "'I don't know.' Do not invent or assume anything outside the text. "
+        "You must explicitly cite the movie titles used to formulate your answer."
+    )
     # GENERATE chat response
     response = client.chat.completions.create(
         model="gpt-4o",  
         messages=[
             {
                 "role": "system",
-                "content": "Answer only using the provided context. Be factual and cite the movie titles used."
+                "content": system_instruction
             },
             {
                 "role": "user",
@@ -88,7 +96,10 @@ def rag_query(query: str) -> str:
         temperature=0 
     )
 
-    return response.choices[0].message.content
+    return {
+        "answer": response.choices[0].message.content,
+        "sources": sources
+    }
 
 
 if __name__ == "__main__":
@@ -110,4 +121,4 @@ if __name__ == "__main__":
 
     response = rag_query(q)
     print("\n--- Respuesta RAG ---")
-    print(response)
+    print(response["answer"])
