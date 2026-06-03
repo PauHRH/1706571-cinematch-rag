@@ -123,7 +123,7 @@ tools_map = {
 }
 
 
-def rag_agent(query: str) -> str:
+def rag_agent(query: str, max_turns: int) -> str:
 
     system_prompt = (
         "You are an advanced autonomous movie recommendation agent with tool access. "
@@ -140,7 +140,7 @@ def rag_agent(query: str) -> str:
     ]
 
 
-    while True:
+    for _ in range(max_turns):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
@@ -194,7 +194,7 @@ if __name__ == "__main__":
     print(f" Tu consulta: {user_query!r}")
     
     try:
-        json_output = rag_agent(user_query)
+        json_output = rag_agent(user_query,5)
         
         print("RESPUESTA JSON")
         print(json_output)
