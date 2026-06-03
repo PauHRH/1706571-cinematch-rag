@@ -50,10 +50,8 @@ def semantic_search(query: str, limit: int = 5) -> list[dict]:
 def rag_query(query: str) -> str:
 
     raw_results = semantic_search(query)
-    docs = [r for r in raw_results]
-    """
     docs = [r for r in raw_results if r['score'] >= 0.90]
-    """
+    
     if not docs:
         print("Error: no s'ha trobat cap pelicula amb una confiança en aquest context.")
     else:
