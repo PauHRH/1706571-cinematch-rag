@@ -5,18 +5,25 @@ la rúbrica (15%)**. Cal almenys 5 decisions amb trade-off explícit per a la
 nota completa. Sigueu breus; un bullet per decisió, sempre amb un **per què**.
 
 ## Retrieval
-- **k / limit** = `_`. Why: `_____`
-- **numCandidates** = `_`. Why (recall vs latency): `_____`
-- **similarity** = `cosine` / `dotProduct` / `euclidean`. Why: `_____`
-- **pre-filter** used? on which field (`year`?): `_____`. Why pre- and not post-filter: `_____`
+- **k / limit** = `5`. Why: `Because it comes by default and it's a good start.`
+- **numCandidates** = `10*limit (5 in this case) = 50`. Why (recall vs latency): `Because it has to be > limit which is 5 and, because I asked PROFE (BOT) and told me that the practice rule is numCandidates >= 10*limit and I trust him as it is well trained with all the theory that we're learning in this course.`
+- **similarity** = `cosine`. Why: `Per a vectors normalitzats, cosine i dotProduct donen el mateix resultat matemàticament, però la convenció del curs (i la que millor funciona quan no pots garantir normalització al 100%) és cosine. Euclidean no és adequada perquè mesura distància geomètrica absoluta, no angle/orientació semàntica. Amb embeddings de text, dues frases sinònimes podrien tenir magnituds molt diferents i euclidean les penalitzaria injustament.`
+- **pre-filter** used? on which field (`year`?): `NOT USED IN N1.`. Why pre- and not post-filter: `We don't have a filter in N1, checked by the BOT PROFE that told us that is correct.`
 
 ## Embeddings
-- **EMBED_MODEL** = `text-embedding-ada-002`. Why this exact model (not just 1536-d): `_____`
+- **EMBED_MODEL** = `text-embedding-ada-002`. Why this exact model (not just 1536-d): `Because it is what they ask at the statement of the exercice. Also it's compatible wit plot_embedding of embedded_movies.`
 
 ## RAG (N2+)
-- **Chunking**: N/A (we use the precomputed plot embedding) / or describe: `_____`
-- **Defensive prompt**: what instruction prevents hallucination: `_____`
-- **CHAT_MODEL** = `_____`. Why: `_____`
+- **Chunking**: N/A (we use the precomputed plot embedding) / or describe: `N/A`
+- **Defensive prompt**: what instruction prevents hallucination: `You are a helpful assistant. Answer ONLY using the provided context.
+    If the context doesn't contain the answer, say that you don't know. Do not invent movies.
+
+    Context:
+    {context}
+
+    Question:
+    {query}`
+- **CHAT_MODEL** = `text-embedding-ada-002`. Why: `Because the exercice statement tells us to use it because the vector it's prepared to use that model `
 
 ## Agent / Multi-agent (N3/N4)
 - **Tools defined**: `_____`
