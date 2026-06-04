@@ -26,8 +26,8 @@ nota completa. Sigueu breus; un bullet per decisió, sempre amb un **per què**.
 - **CHAT_MODEL** = `text-embedding-ada-002`. Why: `Because the exercice statement tells us to use it because the vector it's prepared to use that model `
 
 ## Agent / Multi-agent (N3/N4)
-- **Tools defined**: `_____`
-- **Architecture pattern** (chaining / routing / evaluator-optimizer / parallel): `_____`. Why: `_____`
+- **Tools defined**: `filter_by_year and search_movies`
+- **Architecture pattern** (chaining / routing / evaluator-optimizer / parallel): `routing + chaining`. Why: `The agent first routes the query to the appropriate tool depending on whether there are temporal constraints (filter_by_year) or not (search_movies). After tool selection, it follows a chaining process where the model iteratively calls tools, collects intermediate results, and then performs a final synthesis step using the retrieved context to generate the response.`
 - **Retry / stop condition** (N4): `_____`
 
 ## Alternatives considered and rejected
