@@ -174,7 +174,22 @@ El paràmetre numCandidates indica quants candidats explorarà l'algorisme abans
 Si numCandidates == limit, l'espai d'exploració és molt reduït i HNSW podria no visitar alguns veïns rellevants del graf. Això disminueix el recall i pot provocar que es retornin documents menys similars que els realment més propers al vector de consulta.
 
 ### Q3 · Si el `$vectorSearch` NO troba res rellevant, què retorna el teu RAG? Per què?
-Quan $vectorSearch no retorna documents amb una similitud suficient, la funció retorna una llista buida. El prompt del sistema indica explícitament que, en aquest cas, el model ha de respondre "I don't know" (o answered=false en la versió amb sortida estructurada) i no inventar informació.
+Quan $vectorSearch no retorna documents amb una similitud suficient, la funció retorna una llista buida. El prompt del sistema indica explícitament que, en aquest cas, el model ha de respondre "I don't know" (o answered=false en la versió amb sortida estructurada) i no inventar informació, tal i com podem veure a continuació:
+   
+   You are a retrieval-augmented assistant. 
+
+    RULES:
+    1. Use ONLY the provided context.
+    2. The context is the ONLY source of truth.
+    3. NEVER use external knowledge.
+    4. Never infer or assume facts that are not explicitly stated.
+    5. If the answer is not fully supported by the context, respond exactly:
+    "I don't know."
+    6. DO NOT partially answer.
+    7. Always cite the movie titles used in your answer.
+    8. If the movie of the context IS NOT relacionated with the question DO NOT take it into account.`
+
+On, al punt 2 es posa que l'única font de coneixement és el context, per tant no ha d'anar a buscar coses de fora. També, que si no pots arribar a la resposta a través del context, que posi el "I don't know". Entre d'altres per evitar al·lucionacions.
 _____
 
 ### Q4 · Per què trieu `cosine` i NO `euclidean` / `dotProduct`?
