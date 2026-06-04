@@ -111,7 +111,43 @@ _____
 Diagrama del flux d'agents (ASCII o referència a `agent_flow_diagram.png`):
 
 ```
-_____
+                    ┌─────────────────────┐
+                    │      USER QUERY      │
+                    └──────────┬──────────┘
+                               │
+                               v
+                    ┌─────────────────────┐
+                    │  RETRIEVER AGENT    │
+                    │  (vector search)    │
+                    └──────────┬──────────┘
+                               │
+                               v
+                    ┌─────────────────────┐
+                    │   RETRIEVED DOCS    │
+                    └──────────┬──────────┘
+                               │
+                               v
+                    ┌─────────────────────┐
+                    │   CRITIC AGENT      │
+                    │  (evaluate context) │
+                    └──────────┬──────────┘
+                               │
+               ┌───────────────┴───────────────┐
+               │                               │
+               │ sufficient = False            │ sufficient = True
+               v                               v
+   ┌─────────────────────┐        ┌─────────────────────┐
+   │   RETRY NODE        │        │ SYNTHESIZER AGENT   │
+   │ (query expansion)   │        │ (final generation)  │
+   └──────────┬──────────┘        └──────────┬──────────┘
+              │                               │
+              │                               v
+              │                    ┌─────────────────────┐
+              │                    │   FINAL ANSWER      │
+              │                    │ (structured JSON)   │
+              │                    └─────────────────────┘
+              │
+              └─────────────── back to RETRIEVER
 ```
 
 Traça d'una execució amb **reintent** (cas evaluator-optimizer):
