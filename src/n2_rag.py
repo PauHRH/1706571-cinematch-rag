@@ -74,8 +74,9 @@ def rag_query(query: str) -> str:
     # PROMPT
     prompt = f"""You are an assistant. Answer ONLY using the provided context.
     If the context doesn't contain the answer, say that you don't know. Do not invent movie and don't try to answer something that you really don't know. 
-    You have to be sure. If the score is not enough (< 0.85) do not answer as is it less than the recommended score.
+    You have to be sure.
     Always cite the exact titles of the movies you use in your answer.
+    Don't use external knowledge to answer the questions, if you don't know it with the context given info of the movies don't answer.
 
     Context:
     {context}
@@ -88,6 +89,8 @@ def rag_query(query: str) -> str:
         "If the context does not contain the answer or is insufficient, you must say exactly: "
         "'I don't know.' Do not invent or assume anything outside the text. "
         "You must explicitly cite the movie titles used to formulate your answer."
+        "YOU CAN'T ANSWER SOMETHING OUTSIDE THE CONTEXT OF THE MOVIES THAT YOU HAVE. YOU CAN'T INVENT AND IF YOU DON'T HAVE THE CONTEXT DON'T ANSWER."
+        "Don't use external knowledge to answer the questions, if you don't know it with the context given info of the movies don't answer."
     )
     # GENERATE chat response
     response = client.chat.completions.create(
