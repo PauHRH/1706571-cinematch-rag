@@ -198,5 +198,4 @@ Per evitar bucles infinits, no es confia únicament en la convergència natural 
 
 Addicionalment, LangGraph imposa un límit de recursió (recursion_limit) que actua com a seguretat final per aturar l’execució si el graf excedeix el nombre màxim de passos permesos.
 
-
 _____
