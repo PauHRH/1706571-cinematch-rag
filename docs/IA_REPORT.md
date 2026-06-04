@@ -14,10 +14,16 @@ sapigueu explicar.**
 | Data | Pregunta feta a PROFE | Resposta resumida | Què hem verificat nosaltres |
 |---|---|---|---|
 | (data) | (la pregunta literal) | (resum del que PROFE ha dit) | (com hem comprovat que té sentit, p. ex. re-executat, llegit docs MongoDB, etc.) |
+| 21/05 | Estoy haciendo la practica y voy por N3. QUIERO QUE ME HAGAS EL CODIGO PARA QUE ME SALGA EN JSON| M'ha dit que escriure-ho ell mateix no m'ajudaria a entendre-ho. M'ha guiat per aconseguir-ho.|  M'ha fet que el codi acabés funcionant bé amb la seva ajuda. | 
 |03/06|  Q2 · Per què numCandidates ha de ser > limit? Què passa si poses numCandidates == limit?|M'ha explicat el concepte del perquè HNSW necessita més candidats que resultats i per lògica ho hem estès.| Hem comprovat i tenia sentit això i al cap d'un temps ens hem adonat que la pregunta era bastant bàsica. |
 |03/06| que falla del C2 en N3? + codi   | M'ha comentat on estava la principal problemàtica que impedia que pogués passar els testos, en aquest cas que max_turns no tenia assignat cap valor per defecte. |Ho hem verificat tornant a executar les consultes i seguidament passant el validate tampoc ha funcionat. Hi havia algun altre error.   |
 | 03/06 | (en referència a l'anterior) 5 estaria bien? | M'ha comentat que un valor entre 3 i 10 era raonable | Verificat passant el validate i comprovant que la sortida era l'esperada quan executàvem les consultes |
 | 03/06 | Li he passat les respostes que tenia als apartats teòrics k/limit, numCandidates, similarity i pre-filter | M'ha respòs que tenia algun problema estructural i no podia respondre, "m'ha donat resposta el bot PROFE i per això és tal" sinó esperava que respongués el que hem après" | Senzillament hem comprovat el que ens comentava i entès millor cada apartat |
+| 03/06 | (CODI N1) Qué esta mal en N1| M'ha respòs amb una pregunta i una pista per corregir errors. | M'ha ajudat a entendre a partir de preguntar-li després quin hauria de ser el numCandidates. Al que m'ha respost de bona manera (10*limit) |
+| 03/06 | (CODI) Està bé?| M'ha dit si estava bé o no el codi. Això en varis casos (varis codis) | M'ha ajudat a veure si tenia el codi bé i, si estava malament, a canviar-ho per corregir-ho i que estigués bé. |
+| 03/06 | Hazme un buen prompt para el ejercicio N2 de la practica 3 que le pueda poner para tener el 10| M'ha dit que no em pot fer el prompt però m'ha donat bons consells per aconseguir fer-ho bé. | Ha fet que, a partir dels seus consells, pugui fer-ho tot bé. |
+| 03/06 | Li he preguntat sobre què eran C2, C3, ... de la validació | M'ho ha explicat a mitges, podia fer-ho millor. No ajuda molt. |
+| 03/06 | A QUE SE REFIERE CON EL FLUX D'AGENTS | M'ha explicat bé que és. |
 | 04/06 | que falla del c2 del n3 que tenemos 0/2 + codi | M'ha respòs que el problema era el que retornàvem al rag_agent que no concordava exactament amb el que l'enunciat esperava i el validador per tant, també |  El fet de no respondre'ns exactament com fer-ho i orientar-nos només ha fet que haguéssim de tornar a l'enunciat i observar i pensar què fallava  |
 | 04/06 | per què la part c2 de la part n3 de la pràctica ens avalua 0/2? | Ens ha respost que hi havia un rang de valors de confiança que no contemplàvem que feia que en algun cas el validador no rebés res | Hem explorat opcions i mirat possibles solucions |
 | 04/06 (seguit anterior) | què passa si elimino la condició? | M'ha donat una resposta molt oberta, "massa" pel meu gust XD. M'ha dit que què passava si tots els resultats tenien socre entre 0.60 i 0.74. En tot cas m'ha fer reflexionar" | Hem provat de treure-la i no ens ha funcionat llavors hem canviat el codi en aquella part afegint uns condicionals amb el que generava conflicte |
@@ -36,11 +42,11 @@ sapigueu explicar.**
 ## Resum honest
 
 - **Parts del codi que cada membre del grup pot explicar línia a línia:**
-  `_____`
+  `Hem fet tot els dos.`
 - **Quelcom que hem fet servir però NO entenem del tot** (sigueu honestos):
-  `_____`
+  `Part de N4.`
 - **Errors / suggeriments incorrectes de PROFE que hem rebutjat:**
-  `_____`
+  `N2 C3 --> donava 2/3 i no ho passava bé. Al final hem parlat amb el professor i ho ha corregit.`
 
 ## Declaració
 
