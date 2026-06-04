@@ -183,7 +183,7 @@ On, al punt 2 es posa que l'única font de coneixement és el context, per tant 
 _____
 
 ### Q4 · Per què trieu `cosine` i NO `euclidean` / `dotProduct`?
-Triem cosine similarity perquè els embeddings de text codifiquen principalment informació semàntica en la direcció del vector. Cosine compara l'angle entre vectors i és relativament independent de la seva magnitud, fet que la fa especialment adequada per a cerca semàntica.
+Triem cosine similarity perquè els embeddings de text codifiquen principalment informació semàntica en la direcció del vector. Cosine compara l'angle entre vectors i és relativament independent de la seva magnitud, fet que la fa especialment adequada per a cerca semàntica. En el cas de OpenAI els embeddings estàn normalitzats el que fa que cosine sigui la que s'adapta més.
 
 En canvi, euclidean distance depèn de la longitud dels vectors i dues representacions semànticament similars podrien aparèixer llunyanes si tenen magnituds diferents. Dot product també és sensible a la magnitud, de manera que vectors més llargs poden obtenir puntuacions elevades encara que no siguin els més similars semànticament.
 
