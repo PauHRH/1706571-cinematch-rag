@@ -123,7 +123,7 @@ tools_map = {
 }
 
 
-def rag_agent(query: str, max_turns: int) -> str:
+def rag_agent(query: str, max_turns: int = 5) -> str:
 
     system_prompt = (
         "You are an advanced autonomous movie recommendation agent with tool access. "
