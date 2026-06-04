@@ -14,7 +14,7 @@ nota completa. Sigueu breus; un bullet per decisió, sempre amb un **per què**.
 - **EMBED_MODEL** = `text-embedding-ada-002`. Why this exact model (not just 1536-d): `Because it is what they ask at the statement of the exercice. Also it's compatible wit plot_embedding of embedded_movies.`
 
 ## RAG (N2+)
-- **Chunking**: N/A (we use the precomputed plot embedding) / or describe: `N/A`
+- **Chunking**: N/A (we use the precomputed plot embedding) / or describe: `The system does not perform runtime chunking because each movie is stored as a single document with a precomputed embedding of the full plot (plot_embedding). Therefore, retrieval operates directly over complete movie plots without splitting them into smaller segments.`
 - **Defensive prompt**: what instruction prevents hallucination: `You are a helpful assistant. Answer ONLY using the provided context.
     If the context doesn't contain the answer, say that you don't know. Do not invent movies.
 
