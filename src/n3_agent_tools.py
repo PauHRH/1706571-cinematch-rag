@@ -49,7 +49,15 @@ def search_movies(query: str, limit: int = 5) -> List[Dict[str, Any]]:
     ]
 
     results = list(collection.aggregate(pipeline))
-    return [r for r in results if r['score'] >= 0.75]
+    filtered = [r for r in results if r["score"] >= 0.75]
+
+    if not filtered:
+        filtered = [r for r in results if r["score"] >= 0.65]
+
+    if not filtered:
+        filtered = results[:3]
+
+    return filtered
 
 
 def filter_by_year(min_year: int, max_year: int, query: str, limit: int = 5) -> List[Dict[str, Any]]:
