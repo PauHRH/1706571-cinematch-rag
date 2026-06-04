@@ -87,16 +87,20 @@ Si utilitzem el model text-embedding-3-small enlloc de l'ada-002 per la query, s
 _____
 
 ### Q2 · Per què `numCandidates` ha de ser > `limit`? Què passa si poses `numCandidates == limit`?
-El paràmetre numCandidates és el nombre de nodes veïns potencials que l'algoritme explorarà durant la cerca, mentre que limit és la quantitat de documents finals que s'acaben retornant a l'usuari. numCandidates ha de ser major que limit perquè la primera fa referència a la fase d'exploració i la segona la de selecció, per tant, lògicament no té sentit. Si fossin iguals l'algoritme haurà d'aturar la seva exploració ja que no tindrà marge. Hi haurà una pèrdua de qualitat i eficàcia en els reusltats.
-_____
+El paràmetre numCandidates indica quants candidats explorarà l'algorisme abans de seleccionar els resultats finals. En MongoDB Atlas Vector Search s'utilitza un índex basat en HNSW, que realitza una cerca aproximada (Approximate Nearest Neighbors, ANN) navegant per un graf de veïns. Per aquest motiu, numCandidates ha de ser superior a limit: primer s'explora un conjunt ampli de candidats i després es seleccionen els limit millors resultats.
+
+Si numCandidates == limit, l'espai d'exploració és molt reduït i HNSW podria no visitar alguns veïns rellevants del graf. Això disminueix el recall i pot provocar que es retornin documents menys similars que els realment més propers al vector de consulta.
 
 ### Q3 · Si el `$vectorSearch` NO troba res rellevant, què retorna el teu RAG? Per què?
-Retornarà textualment una resposta de negació. En el nostre cas I don't know, perquè quan hem construït el prompt hem afegit una cláusula estricta: Answer only using the provided context. If the context doesn't containt the answer, say that you don't know. Do not invent movies.
+Quan $vectorSearch no retorna documents amb una similitud suficient, la funció retorna una llista buida. El prompt del sistema indica explícitament que, en aquest cas, el model ha de respondre "I don't know" (o answered=false en la versió amb sortida estructurada) i no inventar informació.
 _____
 
 ### Q4 · Per què trieu `cosine` i NO `euclidean` / `dotProduct`?
-Principalment per coincidència amb l'origen de les dades i per la naturalesa de la cerca de text en RAG. El corpus original de la base de dades es va indexar en origen utilitzant la mètrica cosine per tant, aquesta coincidència tècnica és obligatòria. A part, la mètrica cosine mesura l'angle entre dos vectors ignorant la seva longitud. No es podria fer amb dotProduct ja que la magnitud poden tenir variacions. L'euclidean mira les distàncies en línia recta si una és molt més llarga que l'altra
-_____
+Triem cosine similarity perquè els embeddings de text codifiquen principalment informació semàntica en la direcció del vector. Cosine compara l'angle entre vectors i és relativament independent de la seva magnitud, fet que la fa especialment adequada per a cerca semàntica.
+
+En canvi, euclidean distance depèn de la longitud dels vectors i dues representacions semànticament similars podrien aparèixer llunyanes si tenen magnituds diferents. Dot product també és sensible a la magnitud, de manera que vectors més llargs poden obtenir puntuacions elevades encara que no siguin els més similars semànticament.
+
+Per aquest motiu, cosine és la mètrica habitual en sistemes RAG basats en embeddings textuals.
 
 ### Q5 (trieu UNA segons el vostre nivell màxim)
 
