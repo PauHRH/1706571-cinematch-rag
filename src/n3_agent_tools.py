@@ -181,7 +181,7 @@ def rag_agent(query: str, max_turns: int = 5) -> str:
         temperature=0
     )
 
-    return final_parse.choices[0].message.parsed
+    return final_parse.choices[0].message.parsed.answer
 
 
 
