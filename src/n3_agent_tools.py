@@ -135,7 +135,7 @@ tools_map = {
 }
 
 
-def rag_agent(query: str, max_turns: int = 5) -> str:
+def rag_agent(query: str, max_turns: int = 5) -> dict:
 
     system_prompt = (
         "You are an advanced autonomous movie recommendation agent with tool access. "
@@ -162,7 +162,7 @@ def rag_agent(query: str, max_turns: int = 5) -> str:
         )
         
         response_message = response.choices[0].message
-        messages.append(response_message)
+        messages.append(response_message.model_dump())
 
 
         if not response_message.tool_calls:
@@ -193,7 +193,7 @@ def rag_agent(query: str, max_turns: int = 5) -> str:
         temperature=0
     )
 
-    return final_parse.choices[0].message.parsed.model_dump_json()
+    return final_parse.choices[0].message.parsed.model_dump()
 
 
 
