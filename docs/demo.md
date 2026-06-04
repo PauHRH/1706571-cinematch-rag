@@ -187,7 +187,8 @@ Per aquest motiu, cosine és la mètrica habitual en sistemes RAG basats en embe
 ### Q5 (trieu UNA segons el vostre nivell màxim)
 
 **Si heu fet N4:** Quina condició fa que l'orquestrador reintenti? Com evites el bucle infinit?
+L'orquestrador decideix reintentar basant-se en la funció encaminadora (should_retry), la qual llegeix l'estat generat pel node crític (critic_node). Si aquest estat state["evaluation"]["sufficient"] és False, es tornarà a reintentar. I això ocurreix si la llista de docs és buida (no té documents), si és menor a dos documents i si avg_score < 0.75.
+S'evita el bucle infinit quan arriba al node synthesize i, a partir d'aquí, finalitzarà (com veiem a la gràfica de N4 — Multi-agent (si arribeu))
 
-**Si heu arribat fins a N3 o inferior:** Per què la sortida estructurada (JSON schema) val més que una resposta en text lliure? Posa un exemple concret on un text lliure us hauria fallat.
 
 _____

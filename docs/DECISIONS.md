@@ -15,14 +15,18 @@ nota completa. Sigueu breus; un bullet per decisió, sempre amb un **per què**.
 
 ## RAG (N2+)
 - **Chunking**: N/A (we use the precomputed plot embedding) / or describe: `The system does not perform runtime chunking because each movie is stored as a single document with a precomputed embedding of the full plot (plot_embedding). Therefore, retrieval operates directly over complete movie plots without splitting them into smaller segments.`
-- **Defensive prompt**: what instruction prevents hallucination: `You are a helpful assistant. Answer ONLY using the provided context.
-    If the context doesn't contain the answer, say that you don't know. Do not invent movies.
+- **Defensive prompt**: what instruction prevents hallucination: `You are a retrieval-augmented assistant.
 
-    Context:
-    {context}
-
-    Question:
-    {query}`
+    RULES:
+    1. Use ONLY the provided context.
+    2. The context is the ONLY source of truth.
+    3. NEVER use external knowledge.
+    4. Never infer or assume facts that are not explicitly stated.
+    5. If the answer is not fully supported by the context, respond exactly:
+    "I don't know."
+    6. DO NOT partially answer.
+    7. Always cite the movie titles used in your answer.
+    8. If the movie of the context IS NOT relacionated with the question DO NOT take it into account.`
 - **CHAT_MODEL** = `text-embedding-ada-002`. Why: `Because the exercice statement tells us to use it because the vector it's prepared to use that model `
 
 ## Agent / Multi-agent (N3/N4)
