@@ -72,12 +72,7 @@ def rag_query(query: str) -> str:
     context = "\n\n".join(context_entries)
 
     # PROMPT
-    prompt = f"""You are an assistant. Answer ONLY using the provided context.
-    If the context DOES NOT contain the answer, say that you don't know. DO NOT invent movie and DO NOT try to answer something that you really DO NOT know. 
-    You have to be sure.
-    Always cite the exact titles of the movies you use in your answer.
-    DO NOT USE EXTERNAL KNOWLEDGE to answer the questions, if you DO NOT know it with the context given info of the movies DO NOT answer.
-
+    prompt = f"""
     Context:
     {context}
 
