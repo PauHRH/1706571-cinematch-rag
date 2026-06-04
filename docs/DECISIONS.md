@@ -1,4 +1,4 @@
-# DECISIONS — `<grup>`
+# DECISIONS — `17`
 
 Documenteu cada decisió no-òbvia amb el seu trade-off. **Avaluat al Canal C de
 la rúbrica (15%)**. Cal almenys 5 decisions amb trade-off explícit per a la
