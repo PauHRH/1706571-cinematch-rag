@@ -17,14 +17,10 @@ class State(TypedDict):
     docs: List[Dict[str, Any]]
     evaluation: Dict[str, Any]
     result: Dict[str, Any]
+    retry_count: int 
 
-
-# =========================
-# Retriever Agent
-# =========================
 
 def search_movies(query: str, limit: int = 5):
-
     query_vector = embed(query)
 
     pipeline = [
@@ -55,9 +51,6 @@ def search_movies(query: str, limit: int = 5):
     if not filtered:
         filtered = [r for r in results if r["score"] >= 0.65]
 
-    if not filtered:
-        filtered = results[:3]
-
     return filtered
 
 
@@ -70,11 +63,12 @@ def retrieve_node(state: State):
     print(f"[RETRIEVER] Retrieved {len(docs)} docs")
 
     return {
-        "docs": docs
+        "docs": docs,
+        "retry_count": state.get("retry_count", 0)  # inicializamos si no existe
     }
 
-def critic_node(state: State):
 
+def critic_node(state: State):
     docs = state["docs"]
 
     print("\n[CRITIC] Evaluating context...")
@@ -84,14 +78,13 @@ def critic_node(state: State):
             "sufficient": False,
             "reason": "No results"
         }
-
     else:
         avg_score = sum(d.get("score", 0) for d in docs) / len(docs)
 
         if len(docs) < 2 or avg_score < 0.75:
             evaluation = {
                 "sufficient": False,
-                "reason": "Low quality context"
+                "reason": f"Low quality context (Average score: {avg_score:.3f}, Docs found: {len(docs)})"
             }
         else:
             evaluation = {
@@ -105,18 +98,23 @@ def critic_node(state: State):
 
 
 def synthesize_node(state: State):
-
     print("\n[SYNTHESIZER] Generating answer...")
 
+    system_prompt = (
+        "You are a retrieval-augmented assistant recommendation system.\n\n"
+        "RULES:\n"
+        "1. Use ONLY the provided context.\n"
+        "2. The context is the ONLY source of truth.\n"
+        "3. NEVER use external knowledge.\n"
+        "4. Never infer or assume facts that are not explicitly stated.\n"
+        "5. If the answer is not fully supported by the context, respond exactly: 'I don't know.'\n"
+        "6. DO NOT partially answer.\n"
+        "7. Always cite the movie titles used in your answer.\n"
+        "8. If the movie of the context IS NOT related with the question DO NOT take it into account."
+    )
+
     messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are a movie recommendation system. "
-                "Only use provided context. "
-                "Do not invent movies."
-            )
-        },
+        {"role": "system", "content": system_prompt},
         {
             "role": "user",
             "content": json.dumps({
@@ -135,31 +133,66 @@ def synthesize_node(state: State):
     return {
         "result": {
             "answer": response.choices[0].message.content,
-            "answered": True
+            "answered": "I don't know" not in response.choices[0].message.content
         }
     }
 
+
 def should_retry(state: State):
+    if state.get("retry_count", 0) >= 1:
+        print("\n[ROUTER] Max retries reached -> Force SYNTHESIZE")
+        return "synthesize"
 
     if not state["evaluation"]["sufficient"]:
-        print("\n[ROUTER] Context insufficient → RETRY")
+        print("\n[ROUTER] Context insufficient -> RETRY")
         return "retry"
 
-    print("\n[ROUTER] Context sufficient → SYNTHESIZE")
+    print("\n[ROUTER] Context sufficient -> SYNTHESIZE")
     return "synthesize"
 
 
 def retry_node(state: State):
-
-    print("\n[RETRIEVER] RETRY SEARCH...")
-
-    new_query = state["query"] + " space disaster sci-fi survival movies"
+    print("\n[RETRIEVER] RETRY SEARCH (Query Expansion)...")
+    
+    current_query = state["query"]
+    reason = state["evaluation"]["reason"]
+    
+    rewrite_messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are an expert search query optimizer. Rewrite the user's movie search query "
+                "to improve semantic retrieval in a vector database. Add alternative synonyms or "
+                "genres related to the core topic, but keep it concise as a single search string. "
+                "Do not include explanations, just output the optimized query string."
+            )
+        },
+        {
+            "role": "user",
+            "content": f"Original query: '{current_query}'. Reason for failure: {reason}."
+        }
+    ]
+    
+    rewrite_response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=rewrite_messages,
+        temperature=0.2
+    )
+    
+    new_query = rewrite_response.choices[0].message.content.strip().strip('"')
+    print(f"[REWRITER] Old query: '{current_query}' -> New optimized query: '{new_query}'")
 
     docs = search_movies(new_query)
+    print(f"[RETRIEVER] Retrieved {len(docs)} docs (retry workflow)")
 
-    print(f"[RETRIEVER] Retrieved {len(docs)} docs (retry)")
+    # Incrementamos el contador de intentos para guardarlo de vuelta en el estado del grafo
+    new_retry_count = state.get("retry_count", 0) + 1
 
-    return {"docs": docs}
+    return {
+        "docs": docs,
+        "retry_count": new_retry_count
+    }
+
 
 graph = StateGraph(State)
 
@@ -188,20 +221,20 @@ app = graph.compile()
 
 
 if __name__ == "__main__":
-
     import sys
 
     if len(sys.argv) > 1:
         query = " ".join(sys.argv[1:])
     else:
-        query = "space movies where earth is destroyed"
+        query = "obscure old minimalist space silent movies about collapsing stars"
 
     result = app.invoke({
         "query": query,
         "docs": [],
         "evaluation": {},
-        "result": {}
+        "result": {},
+        "retry_count": 0
     })
 
-    print("\n====================")
-    print(result["result"])
+    print("FINAL EXECUTION RESULT:")
+    print(json.dumps(result["result"], indent=2, ensure_ascii=False))
