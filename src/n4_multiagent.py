@@ -189,7 +189,12 @@ app = graph.compile()
 
 if __name__ == "__main__":
 
-    query = "space movies where earth is destroyed"
+    import sys
+
+    if len(sys.argv) > 1:
+        query = " ".join(sys.argv[1:])
+    else:
+        query = "space movies where earth is destroyed"
 
     result = app.invoke({
         "query": query,
