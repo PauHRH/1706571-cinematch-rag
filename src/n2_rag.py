@@ -73,17 +73,10 @@ def rag_query(query: str) -> str:
 
     # PROMPT
     prompt = f"""You are an assistant. Answer ONLY using the provided context.
-<<<<<<< HEAD
     If the context DOES NOT contain the answer, say that you don't know. DO NOT invent movie and DO NOT try to answer something that you really DO NOT know. 
     You have to be sure.
     Always cite the exact titles of the movies you use in your answer.
     DO NOT USE EXTERNAL KNOWLEDGE to answer the questions, if you DO NOT know it with the context given info of the movies DO NOT answer.
-=======
-    If the context doesn't contain the answer, say that you don't know. Do not invent movie and don't try to answer something that you really don't know. 
-    You have to be sure.
-    Always cite the exact titles of the movies you use in your answer.
-    Don't use external knowledge to answer the questions, if you don't know it with the context given info of the movies don't answer.
->>>>>>> af575a993f86863095192273894b416fee376182
 
     Context:
     {context}
@@ -91,18 +84,19 @@ def rag_query(query: str) -> str:
     Question:
     {query}
     """
-    system_instruction = (
-        "You are a strict factual assistant. Answer ONLY using the explicitly provided context. "
-        "If the context does not contain the answer or is insufficient, you must say exactly: "
-        "'I don't know.' DO NOT invent or assume anything outside the context. "
-        "You must explicitly cite the movie titles used to formulate your answer."
-        "YOU CAN'T ANSWER SOMETHING OUTSIDE THE CONTEXT OF THE MOVIES THAT YOU HAVE. YOU CAN'T INVENT AND IF YOU DON'T HAVE THE CONTEXT DON'T ANSWER."
-<<<<<<< HEAD
-        "DO NOT use external knowledge to answer the questions, if you DO NOT know it with the context given info of the movies DO NOT answer."
-=======
-        "Don't use external knowledge to answer the questions, if you don't know it with the context given info of the movies don't answer."
->>>>>>> af575a993f86863095192273894b416fee376182
-    )
+    system_instruction = """
+    You are a retrieval-augmented assistant.
+
+    RULES:
+    1. Use ONLY the provided context.
+    2. The context is the ONLY source of truth.
+    3. NEVER use external knowledge.
+    4. Never infer or assume facts that are not explicitly stated.
+    5. If the answer is not fully supported by the context, respond exactly:
+    "I don't know."
+    6. DO NOT partially answer.
+    7. Always cite the movie titles used in your answer.
+    """
     # GENERATE chat response
     response = client.chat.completions.create(
         model="gpt-4o",  
