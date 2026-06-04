@@ -50,12 +50,12 @@ def semantic_search(query: str, limit: int = 5) -> list[dict]:
 def rag_query(query: str) -> str:
 
     raw_results = semantic_search(query)
-    docs = [r for r in raw_results if r['score'] >= 0.90]
+    docs = [r for r in raw_results if r['score'] >= 0.85]
     
     if not docs:
         print("Error: no s'ha trobat cap pelicula amb una confiança en aquest context.")
     else:
-        print(f"{len(docs)} películas encontradas con alta confianza (>= 0.90)")
+        print(f"{len(docs)} películas encontradas con alta confianza (>= 0.85)")
         for r in docs:
             print(f"  {r['score']:.4f}  ({r.get('year', '?')})  {r['title']}")
             
@@ -72,8 +72,9 @@ def rag_query(query: str) -> str:
     context = "\n\n".join(context_entries)
 
     # PROMPT
-    prompt = f"""You are a helpful assistant. Answer ONLY using the provided context.
-    If the context doesn't contain the answer, say that you don't know. Do not invent movies.
+    prompt = f"""You are an assistant. Answer ONLY using the provided context.
+    If the context doesn't contain the answer, say that you don't know. Do not invent movie and don't try to answer something that you really don't know. 
+    You have to be sure. If the score is not enough (< 0.85) do not answer as is it less than the recommended score.
     Always cite the exact titles of the movies you use in your answer.
 
     Context:
