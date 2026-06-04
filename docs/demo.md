@@ -88,7 +88,7 @@ ser semàntica — sense la paraula clau literal al títol.)
 2. `I want to watch space action movies released between 1990 and 1995`
 3. `PARIS HILTON PSG`
 
-Esquema de sortida (Pydantic o JSON schema):
+Esquema de sortida (Pydantic o JSON schema) i Exemple de sortida estructurada:
  
 CERCA: 
  ![N3_CERCA](N3_CERCA.png)
@@ -96,15 +96,8 @@ FILTRE ANYS: ![N3_FILTRE](N3_filtre.png)
  
 BUIT:
  ![N3_BUIT](n3_buit.png)
-```python
-_____
-```
 
-Exemple de sortida estructurada:
 
-```json
-_____
-```
 
 ### N4 — Multi-agent (si arribeu)
 
@@ -152,10 +145,7 @@ Diagrama del flux d'agents (ASCII o referència a `agent_flow_diagram.png`):
 
 Traça d'una execució amb **reintent** (cas evaluator-optimizer):
 
-```
-_____
-```
-
+![REINTENT](N4_FAIL.png)
 ---
 
 ## 2. Defensa escrita (Q&A) — **OBLIGATÒRIA**

@@ -81,7 +81,7 @@ def critic_node(state: State):
     else:
         avg_score = sum(d.get("score", 0) for d in docs) / len(docs)
 
-        if len(docs) < 2 or avg_score < 0.75:
+        if len(docs) < 2 or avg_score < 0.90:
             evaluation = {
                 "sufficient": False,
                 "reason": f"Low quality context (Average score: {avg_score:.3f}, Docs found: {len(docs)})"
