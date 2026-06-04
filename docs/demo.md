@@ -203,7 +203,10 @@ Per aquest motiu, cosine és la mètrica habitual en sistemes RAG basats en embe
 
 **Si heu fet N4:** Quina condició fa que l'orquestrador reintenti? Com evites el bucle infinit?
 L'orquestrador decideix reintentar basant-se en la funció encaminadora (should_retry), la qual llegeix l'estat generat pel node crític (critic_node). Si aquest estat state["evaluation"]["sufficient"] és False, es tornarà a reintentar. I això ocurreix si la llista de docs és buida (no té documents), si és menor a dos documents i si avg_score < 0.75.
-S'evita el bucle infinit quan arriba al node synthesize i, a partir d'aquí, finalitzarà (com veiem a la gràfica de N4 — Multi-agent (si arribeu))
+
+El bucle infinit no es pot evitar confiant només en què el flux arribi a synthesize, ja que si la cerca expandida torna a obtenir un context insuficient, el crític tornaria a avaluar amb un False. Per evitar-ho de forma robusta, hem implementat dos mecanismes de control:
+- Control d'estat determinista: hem afegit una variable de control retry_count dins del State de LangGraph. Quan el flux passa pel retry_node, aquest comptador s'incrementa. Si el router should_retry detecta que ja s'ha realitzat un reintent (state["retry_count"] >= 1), actua com un circuit breaker i força de manera estricta la transició cap al node synthesize, evitant que el codi es quedi atrapat en un cicle infinit independentment de la qualitat del segon context.  
+- Límit de recursió de LangGraph: Com a mesura de seguretat a nivell d'orquestrador, la compilació del graf utilitza un límit de recursió explícit (recursion_limit) que llança una excepció controlada i atura l'execució si el sistema supera les passes permeses pel flux.  
 
 
 _____
