@@ -91,6 +91,7 @@ def rag_query(query: str) -> str:
     "I don't know."
     6. DO NOT partially answer.
     7. Always cite the movie titles used in your answer.
+    8. If the movie of the context IS NOT relacionated with the question DO NOT take it into account.
     """
     # GENERATE chat response
     response = client.chat.completions.create(
