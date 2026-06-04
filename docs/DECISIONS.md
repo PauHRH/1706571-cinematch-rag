@@ -28,7 +28,7 @@ nota completa. Sigueu breus; un bullet per decisió, sempre amb un **per què**.
 ## Agent / Multi-agent (N3/N4)
 - **Tools defined**: `filter_by_year and search_movies`
 - **Architecture pattern** (chaining / routing / evaluator-optimizer / parallel): `routing + chaining`. Why: `The agent first routes the query to the appropriate tool depending on whether there are temporal constraints (filter_by_year) or not (search_movies). After tool selection, it follows a chaining process where the model iteratively calls tools, collects intermediate results, and then performs a final synthesis step using the retrieved context to generate the response.`
-- **Retry / stop condition** (N4): `_____`
+- **Retry / stop condition** (N4): `El sistema reintenta la recuperación cuando el CriticAgent detecta que el contexto obtenido es insuficiente o de baja calidad, por ejemplo si no hay resultados o el score medio de similitud es bajo. En ese caso el orquestador realiza una nueva búsqueda ampliando la query (query expansion) para intentar obtener documentos más relevantes. El proceso se detiene cuando el CriticAgent marca el contexto como suficiente, momento en el que el Synthesizer genera la respuesta final, o cuando se alcanza el límite máximo de reintentos.`
 
 ## Alternatives considered and rejected
 - `_____` rejected because `_____`
