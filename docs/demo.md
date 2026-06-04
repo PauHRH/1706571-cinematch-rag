@@ -14,13 +14,53 @@ Aquest fitxer és **obligatori**. Conté dues parts:
 Comanda executada:
 
 ```bash
-uv run python -m src.n1_semantic_search "_____"
+uv run python -m src.n1_semantic_search "peliculas con coches"
 ```
 
 Sortida real (top-5 pel·lícules amb `vectorSearchScore`):
-
+![n1 ex1](N1_1.png)
 ```
-_____
+Query: 'peliculas con coches'
+
+  0.9115  (1984)  Cannonball Run II
+  0.9100  (2007)  Grindhouse
+  0.9070  (2008)  Speed Racer
+  0.9066  (1968)  Chitty Chitty Bang Bang
+  0.9062  (2007)  Redline
+```
+
+Comanda executada:
+```bash
+uv run python -m src.n1_semantic_search "torrente"
+```
+
+Sortida real (top-5 pel·lícules amb `vectorSearchScore`):
+![n1 2](N1_2.png)
+```
+Query: 'torrente'
+
+  0.9298  (2001)  Torrente 2: Mission in Marbella
+  0.9185  (2011)  Torrente 4
+  0.9096  (2014)  Torrente 5
+  0.9042  (2002)  800 Bullets
+  0.9007  (2010)  The Princess of Montpensier
+```
+
+Comanda executada:
+```bash
+uv run python -m src.n1_semantic_search "dime peliculas donde haya mucha accion"
+```
+
+Sortida real (top-5 pel·lícules amb `vectorSearchScore`):
+![N1 3](N1_3-1.png)
+```
+Query: 'dime peliculas donde haya mucha accion'
+
+  0.8969  (2005)  The Legend of Zorro
+  0.8951  (2003)  Once Upon a Time in Mexico
+  0.8950  (2014)  Ardor
+  0.8935  (1987)  Predator
+  0.8933  (2004)  Man on Fire
 ```
 
 (Repetiu amb 3 queries diferents per demostrar que funciona; almenys una ha de
@@ -30,26 +70,32 @@ ser semàntica — sense la paraula clau literal al títol.)
 
 **Cas positiu** (resposta basada al context):
 
-- Query: `_____`
-- Top-k títols recuperats: `_____`
-- Resposta de l'LLM (ha de citar títols): `_____`
-
+- Query: `Peliculas donde salga torrente`
+- Top-k títols recuperats: `5`
+- Resposta de l'LLM (ha de citar títols): `Las películas donde aparece Torrente son "Torrente 2: Mission in Marbella" (2001), "Torrente 4" (2011) y "Torrente 5" (2014).`
+![N2_2](N2_2.png)
 **Cas negatiu** (sense context → ha de dir "no ho sé"):
 
-- Query: `_____`
-- Resposta esperada: `_____`
-- Resposta obtinguda: `_____`
-
+- Query: `PELIS DE COCHES`
+- Resposta esperada: `I don't know.`
+- Resposta obtinguda: `I don't know.`
+![alt text](N2_1.png)
 ### N3 — Tools + Structured Outputs (si arribeu)
 
 3 casos que exerciten **rutes diferents** (cerca / filtre / no trobat):
 
-1. `_____`
-2. `_____`
-3. `_____`
+1. `Recommend me some funny Spanish comedy movies`
+2. `I want to watch space action movies released between 1990 and 1995`
+3. `PARIS HILTON PSG`
 
 Esquema de sortida (Pydantic o JSON schema):
-
+ 
+CERCA: 
+ ![N3_CERCA](N3_CERCA.png)
+FILTRE ANYS: ![N3_FILTRE](N3_filtre.png)
+ 
+BUIT:
+ ![N3_BUIT](n3_buit.png)
 ```python
 _____
 ```
